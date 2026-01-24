@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -38,13 +37,21 @@
       overscroll-behavior: none;
       min-height: 100svh;
       padding-bottom: env(safe-area-inset-bottom);
-}
+    }
+
+    /* When in game mode on mobile, avoid scroll friction */
+    body.game-mode{
+      overflow:hidden;
+      touch-action: manipulation;
+    }
 
     .wrap{
-      height:100%;
+      min-height:100%;
       display:grid;
       place-items:center;
       padding:18px;
+      align-content:start;
+      gap:12px;
     }
 
     .card{
@@ -53,11 +60,8 @@
       border: 1px solid rgba(255,255,255,.08);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      overflow:auto;
-      overscroll-behavior: none;
-      min-height: 100svh;
-      padding-bottom: env(safe-area-inset-bottom);
-display:grid;
+      overflow:hidden;
+      display:grid;
       grid-template-columns: 360px 1fr;
       gap:0;
     }
@@ -90,9 +94,7 @@ display:grid;
       border: 1px solid rgba(255,255,255,.12);
       box-shadow: 0 10px 30px rgba(110,231,255,.12);
     }
-    .title{
-      line-height:1.1;
-    }
+    .title{ line-height:1.1; }
     .title h1{
       margin:0;
       font-size:18px;
@@ -133,7 +135,6 @@ display:grid;
       display:flex;
       flex-direction:column;
       gap:10px;
-      flex-wrap:wrap;
       margin-top:10px;
     }
     button{
@@ -159,28 +160,19 @@ display:grid;
       background: rgba(239,68,68,.13);
       border-color: rgba(239,68,68,.22);
     }
-    .ghost{
-      background: rgba(0,0,0,.18);
-    }
+    .ghost{ background: rgba(0,0,0,.18); }
 
-    .hint{
-      margin-top:12px;
-      padding:10px 12px;
-      border-radius: 14px;
-      background: rgba(0,0,0,.18);
-      border: 1px solid rgba(255,255,255,.08);
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.35;
+    .foot{
+      margin-top:10px;
+      font-size:11px;
+      color:rgba(255,255,255,.45);
     }
-    .hint b{ color:var(--text); }
 
     .right{
       position:relative;
       min-height: 420px;
     }
 
-    /* Playfield takes clicks */
     .playfield{
       position:absolute; inset:0;
       display:grid;
@@ -231,12 +223,10 @@ display:grid;
     }
     .pill strong{ color:var(--text); }
 
-    /* Phases */
     .phase-ready .playfield{ cursor:default; }
     .phase-wait .playfield{ cursor:pointer; }
     .phase-go .playfield{ cursor:pointer; }
 
-    /* Red flash (GO) */
     .go-surface{
       position:absolute; inset:0;
       background: radial-gradient(900px 600px at 50% 20%, rgba(255,43,43,.18), rgba(255,43,43,.88));
@@ -246,7 +236,6 @@ display:grid;
     }
     .phase-go .go-surface{ opacity:1; }
 
-    /* Shake for too soon */
     @keyframes shake {
       0%,100%{ transform:translateX(0); }
       20%{ transform:translateX(-6px); }
@@ -256,7 +245,6 @@ display:grid;
     }
     .shake{ animation: shake .22s ease; }
 
-    /* Toast */
     .toast{
       position:absolute;
       left:50%;
@@ -279,13 +267,6 @@ display:grid;
     .toast.show{
       opacity:1;
       transform:translateX(-50%) translateY(-2px);
-    }
-
-    /* Small footer note */
-    .foot{
-      margin-top:10px;
-      font-size:11px;
-      color:rgba(255,255,255,.45);
     }
 
     .pageTitle{
@@ -353,22 +334,18 @@ display:grid;
       color: rgba(233,238,252,.92);
     }
 
-    /* Mobile tuning (single-column, big taps, stable viewport) */
+    /* Mobile tuning */
     @media (max-width: 560px){
       .wrap{
         padding:12px;
-        align-items:start;
+        place-items:stretch;
       }
 
       .pageTitle h1{ font-size:28px; }
       .pageTitle p{ font-size:13px; }
 
-      .howto{
-        padding:12px 14px;
-      }
-      .howto ol{
-        font-size:13px;
-      }
+      .howto{ padding:12px 14px; }
+      .howto ol{ font-size:13px; }
 
       .card{ width: 100%; }
 
@@ -403,13 +380,76 @@ display:grid;
       }
     }
 
+    /* =========
+       GAME MODE (Option A)
+       On mobile during a run: hide title/howto, compact left, expand playfield.
+       ========= */
+    @media (max-width: 560px){
+      body.game-mode .pageTitle,
+      body.game-mode .howto{
+        display:none !important;
+      }
+
+      body.game-mode .wrap{
+        padding:10px;
+        gap:10px;
+      }
+
+      body.game-mode .card{
+        height: 100svh;
+      }
+
+      /* Compact the left panel to the essentials */
+      body.game-mode .left{
+        padding:10px 12px;
+      }
+      body.game-mode .brand{
+        display:none; /* frees vertical space */
+      }
+
+      /* Show only ROUND + PB while playing */
+      body.game-mode .statgrid{
+        margin:0 0 10px;
+        gap:8px;
+      }
+      body.game-mode .statgrid .stat:nth-child(3),
+      body.game-mode .statgrid .stat:nth-child(4){
+        display:none;
+      }
+
+      body.game-mode .controls{
+        margin-top:0;
+        gap:10px;
+      }
+
+      /* Hide non-essential buttons while in-run to reduce clutter */
+      body.game-mode #copyBtn,
+      body.game-mode #resetBtn{
+        display:none;
+      }
+
+      body.game-mode .foot{
+        display:none;
+      }
+
+      /* Expand the game area */
+      body.game-mode .right{
+        min-height: 68svh;
+      }
+
+      /* Slightly larger center for clarity */
+      body.game-mode .center{
+        width: min(560px, 100%);
+      }
+    }
+
   </style>
 </head>
 
 <body>
   <div class="wrap">
 
-    <div class="pageTitle">
+    <div class="pageTitle" id="pageTitle">
       <h1>Red Reflex</h1>
       <p>Reaction Time Test — Best of 5</p>
     </div>
@@ -500,11 +540,8 @@ display:grid;
 
       const SAVE_KEY = "red_reflex_v1";
 
-      // Optional: if you already have GA4, you can wire these to gtag if present.
       function track(eventName, params = {}) {
-        // Example:
-        // if (typeof window.gtag === "function") window.gtag("event", eventName, params);
-        // Keep no-op by default to avoid breaking anything.
+        // no-op by default
       }
 
       // -------------------------
@@ -531,20 +568,28 @@ display:grid;
       const toast = document.getElementById("toast");
 
       // -------------------------
-      // State (single source of truth)
+      // State
       // -------------------------
       const defaultState = () => ({
         phase: "ready", // ready | wait | go | result | done
-        round: 0,       // 0..TOTAL_ROUNDS
+        round: 0,
         waitTimerId: null,
-        goTime: 0,      // performance.now when screen turns red
+        goTime: 0,
         lastMs: null,
-        runResults: [], // ms per round
-        pbMs: loadPB(), // personal best ms
-        lastSummary: "" // for copy/share
+        runResults: [],
+        pbMs: loadPB(),
+        lastSummary: ""
       });
 
       let state = defaultState();
+
+      // -------------------------
+      // Game-mode helper (Option A)
+      // -------------------------
+      function setGameMode(on) {
+        // Only meaningful on mobile due to CSS media query
+        document.body.classList.toggle("game-mode", !!on);
+      }
 
       // -------------------------
       // Persistence
@@ -564,9 +609,7 @@ display:grid;
       function savePB(pbMs) {
         try {
           localStorage.setItem(SAVE_KEY, JSON.stringify({ pbMs }));
-        } catch {
-          // ignore storage failures
-        }
+        } catch {}
       }
 
       // -------------------------
@@ -586,7 +629,6 @@ display:grid;
       }
 
       function randomInt(min, max) {
-        // inclusive min, inclusive max
         return Math.floor(Math.random() * (max - min + 1)) + min;
       }
 
@@ -616,7 +658,6 @@ display:grid;
 
       function retriggerShake() {
         centerCard.classList.remove("shake");
-        // Force reflow to retrigger animation
         void centerCard.offsetWidth;
         centerCard.classList.add("shake");
       }
@@ -626,7 +667,7 @@ display:grid;
       // -------------------------
       function startRun() {
         clearWaitTimer();
-        state = defaultState(); // fresh run, keep PB loaded
+        state = defaultState();
         setPhase("wait");
         state.round = 1;
         state.runResults = [];
@@ -635,6 +676,9 @@ display:grid;
         nextBtn.disabled = true;
         copyBtn.disabled = true;
         ctaLine.hidden = true;
+
+        // Enter game mode for mobile while playing
+        setGameMode(true);
 
         headline.textContent = "Wait…";
         subline.textContent = "Don’t click yet. The screen will turn red once.";
@@ -658,13 +702,11 @@ display:grid;
 
       function handleAction() {
         if (state.phase === "ready") {
-          // Ignore; user should press Start.
           showToast("Press Start to begin.");
           return;
         }
 
         if (state.phase === "wait") {
-          // Too soon
           clearWaitTimer();
           retriggerShake();
           showToast("Too soon — wait for red.", 1000);
@@ -672,9 +714,8 @@ display:grid;
           subline.textContent = "Penalty applied. Next signal will come soon.";
           track("click_early", { round: state.round });
 
-          // Short cooldown before rescheduling to prevent spam
           setTimeout(() => {
-            if (state.phase !== "wait") return; // in case state changed
+            if (state.phase !== "wait") return;
             headline.textContent = "Wait…";
             subline.textContent = "Now be ready. The screen will turn red.";
             scheduleGo();
@@ -691,7 +732,6 @@ display:grid;
           state.lastMs = reactionMs;
           state.runResults.push(reactionMs);
 
-          // Update PB
           if (state.pbMs == null || reactionMs < state.pbMs) {
             state.pbMs = reactionMs;
             savePB(state.pbMs);
@@ -709,7 +749,6 @@ display:grid;
 
           track("round_complete", { round: state.round, reaction_ms: reactionMs });
 
-          // Enable next button or finish
           if (state.round < TOTAL_ROUNDS) {
             nextBtn.disabled = false;
             copyBtn.disabled = true;
@@ -722,13 +761,11 @@ display:grid;
         }
 
         if (state.phase === "result") {
-          // Optional: treat click as Next to reduce friction
           if (!nextBtn.disabled) nextRound();
           return;
         }
 
         if (state.phase === "done") {
-          // Optional: quick restart on click
           showToast("Press Start for a new run.");
           return;
         }
@@ -749,12 +786,14 @@ display:grid;
         subline.textContent = "Don’t click yet. The screen will turn red once.";
         scheduleGo();
 
+        // keep game mode on during the run
+        setGameMode(true);
+
         track("round_next", { round: state.round });
         render();
       }
 
       function finishRun() {
-        // Called right after last round is recorded
         clearWaitTimer();
         setPhase("done");
         nextBtn.disabled = true;
@@ -764,12 +803,9 @@ display:grid;
         const pb = state.pbMs;
 
         const summary =
-          `Red Reflex — Best of 5
-` +
-          `My best this run: ${runBest.toFixed(DECIMALS)} ms
-` +
-          `Average: ${runAvg.toFixed(DECIMALS)} ms
-` +
+          `Red Reflex — Best of 5\n` +
+          `My best this run: ${runBest.toFixed(DECIMALS)} ms\n` +
+          `Average: ${runAvg.toFixed(DECIMALS)} ms\n` +
           `Personal Best: ${pb.toFixed(DECIMALS)} ms`;
 
         state.lastSummary = summary;
@@ -781,6 +817,9 @@ display:grid;
         ctaLine.textContent = "Try to beat yourself and share to beat your friends!";
 
         copyBtn.disabled = false;
+
+        // Exit game mode after run so user can scroll/read/copy comfortably
+        setGameMode(false);
 
         track("run_complete", {
           avg_ms: runAvg,
@@ -798,13 +837,11 @@ display:grid;
           showToast("Copied to clipboard.", 1000);
           track("copy_result");
         } catch {
-          // Fallback: prompt
           showToast("Copy failed — your browser blocked it.", 1300);
         }
       }
 
       function resetPB() {
-        // Only reset the stored PB; keep current run intact.
         try { localStorage.removeItem(SAVE_KEY); } catch {}
         state.pbMs = null;
         render();
@@ -813,7 +850,7 @@ display:grid;
       }
 
       // -------------------------
-      // Render (single UI painter)
+      // Render
       // -------------------------
       function render() {
         roundText.textContent = `ROUND ${state.round} / ${TOTAL_ROUNDS}`;
@@ -823,11 +860,8 @@ display:grid;
         const runAvg = avg(state.runResults);
         avgText.textContent = runAvg == null ? "—" : `${runAvg.toFixed(DECIMALS)} ms`;
 
-        // Button states
-        startBtn.disabled = (state.phase === "wait" || state.phase === "go"); // avoid mid-round restarts by accident
+        startBtn.disabled = (state.phase === "wait" || state.phase === "go");
         ctaLine.hidden = (state.phase !== "done");
-        // nextBtn controlled elsewhere
-        // copyBtn controlled elsewhere
       }
 
       // -------------------------
@@ -848,6 +882,7 @@ display:grid;
 
       // Initialize UI
       setPhase("ready");
+      setGameMode(false);
       render();
     })();
   </script>
