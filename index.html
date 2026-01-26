@@ -697,7 +697,10 @@
         subline.textContent = "Don’t click yet. The screen will turn red once.";
         scheduleGo();
 
-        track("run_start", { total_rounds: TOTAL_ROUNDS });
+        track("game_start", {
+  total_rounds: TOTAL_ROUNDS
+});
+
         render();
       }
 
