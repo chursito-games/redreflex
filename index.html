@@ -14,6 +14,7 @@
   </script>
 
   <title>Red Reflex — Reaction Time Test (Best of 5)</title>
+  <meta name="description" content="Red Reflex is a free reaction time test. Press Start, wait for the screen to turn red, then tap as fast as you can. Play 5 rounds, track your best time, and challenge friends." />
 
   <style>
 
@@ -107,7 +108,8 @@
       box-shadow: 0 10px 30px rgba(110,231,255,.12);
     }
     .title{ line-height:1.1; }
-    .title h1{
+    .title h1,
+    .title h2{
       margin:0;
       font-size:18px;
       letter-spacing:.4px;
@@ -455,6 +457,37 @@
       }
     }
 
+  
+    /* Footer nav (AdSense-friendly site navigation) */
+    footer.site-footer{
+      width:min(980px, 100%);
+      margin: 12px auto 22px;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    footer.site-footer a{
+      color: var(--text);
+      text-decoration: underline;
+    }
+    footer.site-footer .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    footer.site-footer .links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+    }
+    
   </style>
 </head>
 
@@ -477,12 +510,27 @@
       </ol>
     </div>
 
-    <div class="card phase-ready" id="app">
+    
+    <section class="howto" id="aboutSnippet" aria-label="About Red Reflex">
+      <h2>About this test</h2>
+      <ol style="list-style: none; padding-left:0; margin:0; color:var(--muted);">
+        <li style="margin-bottom:8px;">
+          <b>Red Reflex</b> is a simple reaction-time game: press Start, wait for the screen to turn red, then tap as fast as you can.
+        </li>
+        <li style="margin-bottom:8px;">
+          You play <b>5 rounds</b>. The site keeps a <b>personal best</b> on your device so you can practice and improve.
+        </li>
+        <li>
+          Want the details? Read the <a href="/about.html" style="color:inherit; text-decoration:underline;">About</a> page, or check the <a href="/privacy.html" style="color:inherit; text-decoration:underline;">Privacy Policy</a>.
+        </li>
+      </ol>
+    </section>
+<div class="card phase-ready" id="app">
       <div class="left">
         <div class="brand">
           <div class="logo" aria-hidden="true"></div>
           <div class="title">
-            <h1>Red Reflex</h1>
+            <h2>Red Reflex</h2>
             <p>Reaction time • Best of 5 • Local personal best</p>
           </div>
         </div>
@@ -536,6 +584,17 @@
         <div class="toast" id="toast" aria-live="polite"></div>
       </div>
     </div>
+    <footer class="site-footer" role="contentinfo">
+      <div class="row">
+        <div>© 2026 Red Reflex</div>
+        <div class="links">
+          <a href="/about.html">About</a>
+          <a href="/privacy.html">Privacy Policy</a>
+          <a href="mailto:churdomains@gmail.com">Contact: churdomains@gmail.com</a>
+        </div>
+      </div>
+    </footer>
+
   </div>
 
   <script defer>
